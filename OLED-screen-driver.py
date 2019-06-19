@@ -1,3 +1,5 @@
+import netifaces as ni
+
 import Adafruit_GPIO.SPI as SPI
 import Adafruit_SSD1306
 
@@ -40,3 +42,11 @@ draw = ImageDraw.Draw(image)
 # Define text and get total width.
 text = 'SSD1306 ORGANIC LED DISPLAY. THIS IS AN OLD SCHOOL DEMO SCROLLER!! GREETZ TO: LADYADA & THE ADAFRUIT CREW, TRIXTER, FUTURE CREW, AND FARBRAUSCH'
 maxwidth, unused = draw.textsize(text, font=font)
+
+
+def getIpAddresses():
+    interfaces  = ni.interfaces()
+    for interface in interfaces:
+        try:
+            ip = ni.ifaddresses('eth0')[ni.AF_INET][0]['addr']
+print ip  # should print "192.168.100.37"
