@@ -42,8 +42,8 @@ KEY="yourYTkey"                      # Clé à récupérer sur l'event youtube
 #       -acodec aac -ac 1 -ar 16000 \
 #       -vcodec libx264 -preset ultrafast -crf 30 -r 30 -b:v 2000k -maxrate 2500k \
 #       stream_test_dual_output.mp4 | -f flv "$YOUTUBE_URL/$KEY" 
-	   
+       
 ffmpeg -c:v h264_mmal -i Xiaomi-FIMI-A3_SD.mp4\
-	   -c:a aac \
+       -c:a aac \
        -c:v h264_omx -b:v 2000k -maxrate 2500k \
        -f flv -r "$FPS" "$YOUTUBE_URL/$KEY"
