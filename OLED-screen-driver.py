@@ -7,6 +7,7 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
+DEBUG = True
 
 # Raspberry Pi pin configuration:
 RST = 24
@@ -45,8 +46,18 @@ maxwidth, unused = draw.textsize(text, font=font)
 
 
 def getIpAddresses():
-    interfaces  = ni.interfaces()
-    for interface in interfaces:
+    netifs  = ni.interfaces()
+    for interface in netifs:
         try:
-            ip = ni.ifaddresses('eth0')[ni.AF_INET][0]['addr']
-print ip  # should print "192.168.100.37"
+            ip = ni.ifaddresses(netifs[interface])[ni.AF_INET][0]['addr']
+            netifs[interface] + " " + ip
+            if DEBUG:
+                print netifs[interface]
+        except KeyError:
+            if DEBUG:
+                print "No IP addr. available for " + netifs[interface]
+            netifs[interface] + ' -'
+        except, e:
+            if DEBUG:
+                print "Unexpected exception" + str(e)
+    return netifs
