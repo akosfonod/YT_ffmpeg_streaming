@@ -41,23 +41,15 @@ font = ImageFont.load_default()
 draw = ImageDraw.Draw(image)
 
 # Define text and get total width.
-text = 'SSD1306 ORGANIC LED DISPLAY. THIS IS AN OLD SCHOOL DEMO SCROLLER!! GREETZ TO: LADYADA & THE ADAFRUIT CREW, TRIXTER, FUTURE CREW, AND FARBRAUSCH'
+text = 'SSD1306 ORGANIC LED DISPLAY.'
+
+top = 2
 maxwidth, unused = draw.textsize(text, font=font)
 
+mem_cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
+cpu_cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)}'"
 
-def getIpAddresses():
-    netifs  = ni.interfaces()
-    for interface in netifs:
-        try:
-            ip = ni.ifaddresses(netifs[interface])[ni.AF_INET][0]['addr']
-            netifs[interface] + " " + ip
-            if DEBUG:
-                print netifs[interface]
-        except KeyError:
-            if DEBUG:
-                print "No IP addr. available for " + netifs[interface]
-            netifs[interface] + ' -'
-        except, e:
-            if DEBUG:
-                print "Unexpected exception" + str(e)
-    return netifs
+    draw.text((x, top),       "IP: " + str(IP),  font=font, fill=255)
+    draw.text((x, top+8),     str(CPU), font=font, fill=255)
+    draw.text((x, top+16),    str(MemUsage),  font=font, fill=255)
+    draw.text((x, top+25),    str(Disk),  font=font, fill=255)
