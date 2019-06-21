@@ -1,4 +1,4 @@
-#TODO: streaming progress printout
+#TODO: streaming progress printout, maybe as a parameter input.
 
 import netifaces as ni
 import time
@@ -19,17 +19,8 @@ DC = 23
 SPI_PORT = 0
 SPI_DEVICE = 0
 
-# Define text and get total width.
-text = 'SSD1306 ORGANIC LED DISPLAY.'
-
-top = 2
-maxwidth, unused = draw.textsize(text, font=font)
-
-mem_cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
 cpu_cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)*100f}'"
-
-    draw.text((x, top),       "IP: " + str(IP),  font=font, fill=255)
-
+mem_cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
 
 def main():
     #main function
@@ -64,11 +55,14 @@ def main():
         # Draw a black filled box to clear the image.
         draw.rectangle((0,0,width,height), outline=0, fill=0)
 
+        IPs      = getIpAddresses() #get all the IP addresses for all interface in a list
         CPU      = subprocess.check_output(cpu_cmd, shell = True )
         MemUsage = subprocess.check_output(mem_cmd, shell = True )
 
-        draw.text((x, top+8),     str(CPU), font=font, fill=255)
-        draw.text((x, top+16),    str(MemUsage),  font=font, fill=255)
+        draw.text((x, top),      str(CPU),       font=font, fill=255)
+        draw.text((x, top+8),    str(MemUsage),  font=font, fill=255)
+        for IP in IPs:
+            draw.text((x, top+16+(8*IP)),   str(IPs[IP]),    font=font, fill=255)
 
         time.sleep(1)
 

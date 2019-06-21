@@ -1,6 +1,6 @@
 #TODO: oled screen: ip address get ✔
-#TODO: control gopro H7 black and get the stream
-#TODO: control xiaomi yi and get the stream
+#TODO: control gopro H7 black and get the stream: https://github.com/KonradIT/goprowifihack/tree/master/HERO7
+#TODO: control xiaomi yi and get the stream:      https://github.com/deltaflyer4747/Xiaomi_Yi
 
 import os
 import signal
