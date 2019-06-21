@@ -1,5 +1,6 @@
 #TODO: oled screen: ip address get ✔
-#TODO: 
+#TODO: control gopro H7 black and get the stream
+#TODO: control xiaomi yi and get the stream
 
 import os
 import signal
@@ -8,8 +9,8 @@ import subprocess
 DEBUG = True
 
 video_intro     = #path to intro video which begins the stream, you should have this file available locally
-video_device0   = #path of device0
-video_device1   = #path of device1
+video_device0   = #path of video device0
+video_device1   = #path of video device1
 
 intro_proc_cmd      = 'ffmpeg -c:v h264_mmal -i "' + video_intro   +'" -c:a aac -c:v h264_omx -b:v 2000k -maxrate 2500k -f mpegts udp://localhost:20001'    #intro input
 video0_proc_cmd     = 'ffmpeg -c:v h264_mmal -i "' + video_device0 +'" -c:a aac -c:v h264_omx -b:v 2000k -maxrate 2500k -f mpegts udp://localhost:20002'    #video0 input
