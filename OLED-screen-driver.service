@@ -1,0 +1,16 @@
+#sudo systemctl daemon-reload
+#sudo systemctl start OLED-screen-driver.service
+#sudo systemctl enable OLED-screen-driverdummy.service
+
+[Unit]
+Description=OLED screen driver service
+After=multi-user.target
+Conflicts=getty@tty1.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/bin/OLED-screen-driver.py
+StandardInput=tty-force
+
+[Install]
+WantedBy=multi-user.target
