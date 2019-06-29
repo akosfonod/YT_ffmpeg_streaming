@@ -1,3 +1,4 @@
+##create a service file for the systemd as following. The file must have .service extension under /lib/systemd/system/ directory
 #sudo systemctl daemon-reload
 #sudo systemctl start OLED-screen-driver.service
 #sudo systemctl enable OLED-screen-driverdummy.service

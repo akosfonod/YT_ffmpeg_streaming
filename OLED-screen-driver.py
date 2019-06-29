@@ -1,4 +1,4 @@
-#TODO: streaming progress printout, maybe as a parameter input.
+#!/usr/bin/python3
 
 import netifaces as ni
 import time
@@ -64,7 +64,13 @@ def main():
         for IP in IPs:
             draw.text((x, top+16+(8*IP)),   str(IPs[IP]),    font=font, fill=255)
 
-        time.sleep(1)
+        if DEBUG:
+            print CPU
+            print MemUsage
+            for IP in IPs:
+                print IPs[IP]
+
+        time.sleep(2)
 
 
 def getIpAddresses():
@@ -87,3 +93,5 @@ def getIpAddresses():
 #Main entrace for the script
 if _name_ == "_main_":
     main()
+
+#TODO: streaming progress printout, maybe as a parameter input.
