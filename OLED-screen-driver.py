@@ -1,7 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/python2
 
 import netifaces as ni
 import time
+import sys
+import subprocess
 
 import Adafruit_GPIO.SPI as SPI
 import Adafruit_SSD1306
@@ -18,6 +20,9 @@ RST = 24
 DC = 23
 SPI_PORT = 0
 SPI_DEVICE = 0
+
+x = 2
+top = 2
 
 cpu_cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)*100f}'"
 mem_cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
@@ -61,37 +66,39 @@ def main():
 
         draw.text((x, top),      str(CPU),       font=font, fill=255)
         draw.text((x, top+8),    str(MemUsage),  font=font, fill=255)
-        for IP in IPs:
-            draw.text((x, top+16+(8*IP)),   str(IPs[IP]),    font=font, fill=255)
+        for i, IP in enumerate(IPs):
+            draw.text((x, top+16+(8*i)),   str(IP),    font=font, fill=255)
 
         if DEBUG:
-            print CPU
-            print MemUsage
+            print (CPU)
+            print (MemUsage)
             for IP in IPs:
-                print IPs[IP]
+                print (IP)
+            print 60 * "="
 
         time.sleep(2)
 
 
 def getIpAddresses():
+    DEBUG = False
     netifs  = ni.interfaces()
-    for interface in netifs:
+    for i, interface in enumerate(netifs):
         try:
-            ip = ni.ifaddresses(netifs[interface])[ni.AF_INET][0]['addr']
-            netifs[interface] + " " + ip
+            ip = ni.ifaddresses(interface)[ni.AF_INET][0]['addr']
+            netifs[i] = netifs[i] + " : " + ip
             if DEBUG:
-                print netifs[interface] + " " + i
+                print (netifs[i] + " " + ip)
         except KeyError:
             if DEBUG:
-                print "No IP addr. available for " + netifs[interface]
-            netifs[interface] + ' -'
-        except, e:
+                print ("No IP addr. available for " + netifs[i])
+            netifs[i] = netifs[i] + ' : -'
+        except:
             if DEBUG:
-                print "Unexpected exception" + str(e)
+                print ("Unexpected exception: " , sys.exc_info()[0])
     return netifs
 
 #Main entrace for the script
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
 
 #TODO: streaming progress printout, maybe as a parameter input.
