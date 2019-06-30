@@ -28,55 +28,70 @@ cpu_cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)*100f}
 mem_cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
 
 def main():
-    #main function
-    # 128x64 display with hardware SPI:
-    disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, dc=DC, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=8000000))
+    try:
+        #main function
+        # 128x64 display with hardware SPI:
+        disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, dc=DC, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=8000000))
 
-    # Initialize library.
-    disp.begin()
+        # Initialize library.
+        disp.begin()
 
-    # Get display width and height.
-    width = disp.width
-    height = disp.height
+        # Get display width and height.
+        width = disp.width
+        height = disp.height
 
-    # Clear display.
-    disp.clear()
-    disp.display()
+        # Clear display.
+        disp.clear()
+        disp.display()
 
-    # Create image buffer.
-    # Make sure to create image with mode '1' for 1-bit color.
-    image = Image.new('1', (width, height))
+        # Create image buffer.
+        # Make sure to create image with mode '1' for 1-bit color.
+        image = Image.new('1', (width, height))
 
-    # Load default font.
-    font = ImageFont.load_default()
+        # Load default font.
+        font = ImageFont.load_default()
 
-    # Create drawing object.
-    draw = ImageDraw.Draw(image)
+        # Create drawing object.
+        draw = ImageDraw.Draw(image)
 
-    # Draw a black filled box to clear the image.
-    draw.rectangle((0,0,width,height), outline=0, fill=0)
-
-    while True:
         # Draw a black filled box to clear the image.
         draw.rectangle((0,0,width,height), outline=0, fill=0)
 
-        IPs      = getIpAddresses() #get all the IP addresses for all interface in a list
-        CPU      = subprocess.check_output(cpu_cmd, shell = True )
-        MemUsage = subprocess.check_output(mem_cmd, shell = True )
+        while True:
+            # Draw a black filled box to clear the image.
+            draw.rectangle((0,0,width,height), outline=0, fill=0)
 
-        draw.text((x, top),      str(CPU),       font=font, fill=255)
-        draw.text((x, top+8),    str(MemUsage),  font=font, fill=255)
-        for i, IP in enumerate(IPs):
-            draw.text((x, top+16+(8*i)),   str(IP),    font=font, fill=255)
+            IPs      = getIpAddresses() #get all the IP addresses for all interface in a list
+            CPU      = subprocess.check_output(cpu_cmd, shell = True )
+            MemUsage = subprocess.check_output(mem_cmd, shell = True )
 
+            draw.text((x, top),      str(CPU),       font=font, fill=255)
+            draw.text((x, top+9),    str(MemUsage),  font=font, fill=255)
+            for i, IP in enumerate(IPs):
+                draw.text((x, top+18+(9*i)),   str(IP),    font=font, fill=255)
+
+            if DEBUG:
+                print (CPU)
+                print (MemUsage)
+                for IP in IPs:
+                    print (IP)
+                print 60 * "="
+
+            disp.image(image)
+            disp.display()
+
+            time.sleep(2)
+
+    except KeyboardInterrupt:
         if DEBUG:
-            print (CPU)
-            print (MemUsage)
-            for IP in IPs:
-                print (IP)
-            print 60 * "="
-
-        time.sleep(2)
+            print ("Interrupted with keyboard!")
+    except:
+        if DEBUG:
+            print ("Unexpected exception: " , sys.exc_info()[0])
+    finally:
+        # Clear display.
+        disp.clear()
+        disp.display()
 
 
 def getIpAddresses():
