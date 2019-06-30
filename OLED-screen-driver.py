@@ -67,7 +67,10 @@ def main():
 
             draw.text((x, top),      str(CPU),       font=font, fill=255)
             draw.text((x, top+9),    str(MemUsage),  font=font, fill=255)
-            for i, IP in enumerate(IPs):
+
+            addresses = iter(IPs)
+            next(addresses,None) #skipping first interface address, which is the loopback
+            for i, IP in enumerate(addresses):
                 draw.text((x, top+18+(9*i)),   str(IP),    font=font, fill=255)
 
             if DEBUG:
