@@ -24,9 +24,10 @@ SPI_DEVICE = 0
 x = 2
 top = 2
 
-cpu_cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)*100f}'"
-mem_cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
+cpu_cmd  = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)}'"
+mem_cmd  = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
 temp_cmd = "cat /sys/devices/virtual/thermal/thermal_zone0/temp | awk '{printf \"SoC Temp: %.1f C\",$1/1000f}'"
+disk_cmd = "df --output=pcent | awk 'FNR == 2 {printf \"Disk: %s\", $1}'"
 
 def main():
     try:
@@ -63,23 +64,26 @@ def main():
             draw.rectangle((0,0,width,height), outline=0, fill=0)
 
             IPs      = getIpAddresses() #get all the IP addresses for all interface in a list
-            CPU      = subprocess.check_output(cpu_cmd, shell = True )
+            CPU      = subprocess.check_output(cpu_cmd,  shell = True )
             TEMP     = subprocess.check_output(temp_cmd, shell = True )
-            MemUsage = subprocess.check_output(mem_cmd, shell = True )
+            MemUsage = subprocess.check_output(mem_cmd,  shell = True )
+            DiskUsage= subprocess.check_output(disk_cmd, shell = True )
 
             draw.text((x, top),      str(CPU),       font=font, fill=255)
-            draw.text((x, top+9),      str(TEMP),      font=font, fill=255)
-            draw.text((x, top+18),    str(MemUsage),  font=font, fill=255)
+            draw.text((x, top+9),    str(TEMP),      font=font, fill=255)
+            draw.text((x, top+18),   str(MemUsage),  font=font, fill=255)
+            draw.text((x, top+27),   str(DiskUsage), font=font, fill=255)
 
             addresses = iter(IPs)
             next(addresses,None) #skipping first interface address, which is the loopback
             for i, IP in enumerate(addresses):
-                draw.text((x, top+27+(9*i)),   str(IP),    font=font, fill=255)
+                draw.text((x, top+36+(9*i)),   str(IP),    font=font, fill=255)
 
             if DEBUG:
                 print (CPU)
                 print (TEMP)
                 print (MemUsage)
+                print (DiskUsage)
                 for IP in IPs:
                     print (IP)
                 print 60 * "="
