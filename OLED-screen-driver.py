@@ -23,6 +23,7 @@ SPI_DEVICE = 0
 
 x = 2
 top = 2
+spacing = 8
 
 cpu_cmd  = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)}'"
 mem_cmd  = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
@@ -69,15 +70,15 @@ def main():
             MemUsage = subprocess.check_output(mem_cmd,  shell = True )
             DiskUsage= subprocess.check_output(disk_cmd, shell = True )
 
-            draw.text((x, top),      str(CPU),       font=font, fill=255)
-            draw.text((x, top+9),    str(TEMP),      font=font, fill=255)
-            draw.text((x, top+18),   str(MemUsage),  font=font, fill=255)
-            draw.text((x, top+27),   str(DiskUsage), font=font, fill=255)
+            draw.text((x, top),             str(CPU),       font=font, fill=255)
+            draw.text((x, top+spacing),     str(TEMP),      font=font, fill=255)
+            draw.text((x, top+spacing*2),   str(MemUsage),  font=font, fill=255)
+            draw.text((x, top+spacing*3),   str(DiskUsage), font=font, fill=255)
 
             addresses = iter(IPs)
             next(addresses,None) #skipping first interface address, which is the loopback
             for i, IP in enumerate(addresses):
-                draw.text((x, top+36+(9*i)),   str(IP),    font=font, fill=255)
+                draw.text((x, top+spacing*4+spacing*i),   str(IP),    font=font, fill=255)
 
             if DEBUG:
                 print (CPU)
